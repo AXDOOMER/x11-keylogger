@@ -13,19 +13,19 @@ function capture {
 
 # Identify the computer and the user
 computerid=$(cat /var/lib/dbus/machine-id)
-uname=$(uname -srp)
+uname=$(uname -srm)
 me=$(whoami)
 
 echo "Hi $me, your ID is: $computerid"
 
-# Get keyboard string
-devline=$(xinput list | grep "AT Translated Set 2 keyboard")
+# Get keyboard string. The name of the targeted device must be added to the grep.
+devline=$(xinput list | grep -e 'AT Translated Set 2 keyboard' -e 'USB Keyboard')
 
 # Get the device ID string
-idstr=$(echo $devline | grep -Po 'id=[0-255]*')
+idstr=$(echo $devline | grep -Po 'id=[0-9]*')
 
 # Extract device ID number
-idnum=$(echo $idstr | grep -Po '[0-255]*')
+idnum=$(echo $idstr | grep -Po '[0-9]*')
 
 echo "Your keyboard has device number $idnum"
 
