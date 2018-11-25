@@ -1,8 +1,8 @@
 # X11 keylogger
 
-A pure Bash keylogger that does not require root privileges.
+A pure Bash keylogger that does not require root privileges and can upload its log to a PHP server.
 
-It is privimive and meant to be a PoC.
+It is primitive and meant to be a PoC.
 
 ### Requirements
 
